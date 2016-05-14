@@ -5,6 +5,12 @@
  */
 package proyectofinal;
 
+import conexionBaseDeDatos.DataBase;
+import gestionProducto.Producto;
+import interfazGUI.VentanaPrincipal;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
 /**
  *
  * @author Clara
@@ -16,6 +22,21 @@ public class ProyectoFinal {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
+        DataBase db = new DataBase("xe","clalocal", "case");
+        VentanaPrincipal vP = new VentanaPrincipal(db);
+//       System.out.println(pruebi.abrirConexion());
+//        ResultSet probando =  pruebi.ejecutaConsulta("select * from PRODUCTOS");
+//        pruebi.recorreResultado(probando);
+//        System.out.println(pruebi.buscaRegistro2("JUEGO"));
+//        
+//        ArrayList <Producto> productos = pruebi.listado();
+//        
+//        for (Producto p : productos) {
+//            System.out.println(p);
+//        }
+   
+        
     }
     
 }

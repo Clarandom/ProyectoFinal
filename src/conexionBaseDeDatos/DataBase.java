@@ -5,6 +5,7 @@
  */
 package conexionBaseDeDatos;
 
+import gestionProducto.Producto;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import oracle.jdbc.driver.OracleDriver;
@@ -114,13 +116,40 @@ public class DataBase {
         return rs;
     }
 
-    public boolean buscaRegistro(String nombreBuscar) {
+//    public boolean buscaRegistro(String nombreBuscar) {
+//        ResultSet rs;
+//        PreparedStatement st;
+//        // Sustituimos la variable por un ?
+//        String sentencia = "SELECT * from PRODUCTOS where nombre= ?";
+//        System.out.println(sentencia);
+//        System.out.println(sentencia);
+//        try {
+//            st = conexion.prepareStatement(sentencia);
+//            //Pasamos los valores a cada uno de los interrogantes
+//            //comenzamos numerando por el 1
+//            st.setString(1, nombreBuscar);
+//            // En este caso te pediría que fuera un entero ---> st.setInt(2,20);
+//            rs = st.executeQuery();
+//            if (rs.next()) { //si el puntero no apunta a nada, pues no entra al if, no quiero mostrar la ventana.
+//
+//                Producto producto = new Producto(rs.getInt(1), rs.getString(2), rs.getInt(3),
+//                        rs.getString(4), rs.getString(5));
+//            } else {
+//                return false;
+//            }
+//        } catch (SQLException ex) {
+//            System.out.println("Error con la base de datos: " + ex.getMessage());
+//        }
+//        return true; //aunque puede ser que se haya producido la excepción.  contamos conn el mensaje
+//    }
+    public Producto buscaRegistro2(String nombreBuscar) {
+        Producto producto = null;
         ResultSet rs;
         PreparedStatement st;
         // Sustituimos la variable por un ?
-        String sentencia = "SELECT * from alumnos where nombre= ?";
+        String sentencia = "SELECT * from PRODUCTOS where nombre= ?";
         System.out.println(sentencia);
-        System.out.println(sentencia);
+
         try {
             st = conexion.prepareStatement(sentencia);
             //Pasamos los valores a cada uno de los interrogantes
@@ -130,43 +159,15 @@ public class DataBase {
             rs = st.executeQuery();
             if (rs.next()) { //si el puntero no apunta a nada, pues no entra al if, no quiero mostrar la ventana.
 
-                Alumno alumno = new Alumno(rs.getString(2), rs.getInt(3),
-                        rs.getInt(4), rs.getInt(5));
-            } else {
-                return false;
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error con la base de datos: " + ex.getMessage());
-        }
-        return true; //aunque puede ser que se haya producido la excepción.  contamos conn el mensaje
-    }
-
-    public Alumno buscaRegistro2(String nombreBuscar) {
-        Alumno alumno = null;
-        ResultSet rs;
-        PreparedStatement st;
-        // Sustituimos la variable por un ?
-        String sentencia = "SELECT * from alumnos where nombre= ?";
-        System.out.println(sentencia);
-        System.out.println(sentencia);
-        try {
-            st = conexion.prepareStatement(sentencia);
-            //Pasamos los valores a cada uno de los interrogantes
-            //comenzamos numerando por el 1
-            st.setString(1, nombreBuscar);
-            // En este caso te pediría que fuera un entero ---> st.setInt(2,20);
-            rs = st.executeQuery();
-            if (rs.next()) { //si el puntero no apunta a nada, pues no entra al if, no quiero mostrar la ventana.
-
-                alumno = new Alumno(rs.getString(2), rs.getInt(3),
-                        rs.getInt(4), rs.getInt(5));
+                producto = new Producto(rs.getInt(1), rs.getString(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5));
             } else {
                 return null;
             }
         } catch (SQLException ex) {
             System.out.println("Error con la base de datos: " + ex.getMessage());
         }
-        return alumno;
+        return producto;
     }
 
     public void cierraResultSet(ResultSet rs) {
@@ -181,7 +182,8 @@ public class DataBase {
     public void recorreResultado(ResultSet rs) {
         try {
             while (rs.next()) {
-                System.out.println(rs.getString(1) + "\t" + rs.getString(2));
+                System.out.println(rs.getString(1) + "\t" + rs.getString(2)
+                        + "\t" + rs.getString(3) + "\t" + rs.getString(4));
             }
         } catch (SQLException ex) {
             System.out.println("Error sql: " + ex.getMessage());
@@ -200,34 +202,29 @@ public class DataBase {
     }
     // Abre la conexión , realiza la consulta, pasa todos los alumnos a un ArrayList, cierra las conexiones y devuelve el ArrayList
 
-    public ArrayList listado() {
+    /**
+     * Método para recorrer
+     *
+     * @return
+     */
+    public ArrayList<Producto> listado() {
         abrirConexion();
-        ResultSet rs = ejecutaConsulta("SELECT * from alumnos");
-        ArrayList<Alumno> alumnos = new ArrayList<Alumno>();
-
+        ResultSet rs = ejecutaConsulta("SELECT * from productos");
+        ArrayList<Producto> productos = new ArrayList<Producto>();
         try {
             while (rs.next()) {
-//                Alumno alumno = new Alumno(rs.getString("nombre"), rs.getInt("nota1"), 
-//                        rs.getInt("nota2"), rs.getInt("nota3")); ES LO MISMO!
-                Alumno alumno = new Alumno(rs.getString(2), rs.getInt(3),
-                        rs.getInt(4), rs.getInt(5));
-
-                alumnos.add(alumno);
+                productos.add(new Producto(rs.getInt(1), rs.getString(2), rs.getInt(3),
+                        rs.getString(4), rs.getString(5)));
             }
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
+         Collections.sort(productos);
         cerrarConexion();
-        return alumnos;
+        return productos;
     }
 
-//     public void recorreResultado(ResultSet rs) {
-//        try {
-//            while (rs.next()) {
-//                System.out.println(rs.getString(1) + "\t" + rs.getString(2));
-//            }
-//        } catch (SQLException ex) {
-//            System.out.println("Error sql: " + ex.getMessage());
-//        }
-//    }
+    public void ordenarListado(ArrayList<Producto> productos) {
+        Collections.sort(productos);
+    }
 }
