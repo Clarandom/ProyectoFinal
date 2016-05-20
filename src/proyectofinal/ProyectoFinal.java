@@ -30,7 +30,7 @@ public class ProyectoFinal {
 //        pruebi.recorreResultado(probando);
 //        System.out.println(pruebi.buscaRegistro2("JUEGO"));
 //        
-//        ArrayList <Producto> productos = pruebi.listado();
+//        ArrayList <Producto> productos = db.listado();
 //        
 //        for (Producto p : productos) {
 //            System.out.println(p);

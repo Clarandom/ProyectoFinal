@@ -189,17 +189,17 @@ public class DataBase {
             System.out.println("Error sql: " + ex.getMessage());
         }
     }
-
-    public void alta(Alumno al) {
-        abrirConexion();
-        int n = al.getNota()[0];
-
-        String cadena = "INSERT INTO alumnos (nombre, nota1, nota2, nota3) VALUES ('"
-                + al.getNombre() + "',  '" + al.getNota(0) + "',  '" + al.getNota(1) + "',  '" + al.getNota(2) + "')";
-
-        ejecutaUpdate(cadena);
-        cerrarConexion();
-    }
+//
+//    public void alta(Alumno al) {
+//        abrirConexion();
+//        int n = al.getNota()[0];
+//
+//        String cadena = "INSERT INTO alumnos (nombre, nota1, nota2, nota3) VALUES ('"
+//                + al.getNombre() + "',  '" + al.getNota(0) + "',  '" + al.getNota(1) + "',  '" + al.getNota(2) + "')";
+//
+//        ejecutaUpdate(cadena);
+//        cerrarConexion();
+//    }
     // Abre la conexión , realiza la consulta, pasa todos los alumnos a un ArrayList, cierra las conexiones y devuelve el ArrayList
 
     /**
@@ -209,17 +209,24 @@ public class DataBase {
      */
     public ArrayList<Producto> listado() {
         abrirConexion();
-        ResultSet rs = ejecutaConsulta("SELECT * from productos");
+        String sentencia = "SELECT * from productos";
+        ResultSet rs;
+        PreparedStatement st;
         ArrayList<Producto> productos = new ArrayList<Producto>();
         try {
+            st = conexion.prepareStatement(sentencia);
+            rs = st.executeQuery();
             while (rs.next()) {
                 productos.add(new Producto(rs.getInt(1), rs.getString(2), rs.getInt(3),
                         rs.getString(4), rs.getString(5)));
             }
+
+            st.close();
+            rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
-         Collections.sort(productos);
+        Collections.sort(productos);
         cerrarConexion();
         return productos;
     }

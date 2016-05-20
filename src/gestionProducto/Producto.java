@@ -114,4 +114,16 @@ public class Producto implements Comparable<Producto> {
         return this.nombre.compareToIgnoreCase(p.nombre);
 
     }
+
+    public String[] getArrayAlumno() {
+        String[] datosProducto = new String[5];
+        datosProducto[0] = Integer.toString(idProducto);
+        datosProducto[1] = nombre;
+        datosProducto[2] = Integer.toString(idProveedor);
+        datosProducto[3] = descripcion;
+        datosProducto[4] = tipo;
+
+        return datosProducto;
+
+    }
 }
