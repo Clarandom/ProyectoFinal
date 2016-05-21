@@ -11,7 +11,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
@@ -75,7 +74,6 @@ public class DataBase {
      * Metodo que cierra la conexion con la base de datos.
      */
     public void cerrarConexion() {
-
         try {
             conexion.close();
             System.out.println("Se cerró :D");
@@ -84,130 +82,12 @@ public class DataBase {
         }
     }
 
-    public int ejecutaUpdate(String statement) {
-
-        int n = 0;
-        try {
-
-            Statement st = conexion.createStatement();
-            System.out.println("La sentencia es: " + statement);
-
-            n = st.executeUpdate(statement);
-        } catch (SQLException ex) {
-            System.out.println("SQL Exception:\n" + ex.getMessage());
-        }
-        return n;
-    }
-
-    public ResultSet ejecutaConsulta(String consulta) {
-        Statement st = null;
-        ResultSet rs = null;
-        try {
-            st = conexion.createStatement();
-            rs = st.executeQuery(consulta);
-        } catch (SQLException ex) {
-            System.out.println("Error sql: " + ex.getMessage());
-        }
-//        try {
-//            st.close();
-//        } catch (SQLException ex) {
-//            System.out.println("Error sql: " + ex.getMessage());
-//        }
-        return rs;
-    }
-
-//    public boolean buscaRegistro(String nombreBuscar) {
-//        ResultSet rs;
-//        PreparedStatement st;
-//        // Sustituimos la variable por un ?
-//        String sentencia = "SELECT * from PRODUCTOS where nombre= ?";
-//        System.out.println(sentencia);
-//        System.out.println(sentencia);
-//        try {
-//            st = conexion.prepareStatement(sentencia);
-//            //Pasamos los valores a cada uno de los interrogantes
-//            //comenzamos numerando por el 1
-//            st.setString(1, nombreBuscar);
-//            // En este caso te pediría que fuera un entero ---> st.setInt(2,20);
-//            rs = st.executeQuery();
-//            if (rs.next()) { //si el puntero no apunta a nada, pues no entra al if, no quiero mostrar la ventana.
-//
-//                Producto producto = new Producto(rs.getInt(1), rs.getString(2), rs.getInt(3),
-//                        rs.getString(4), rs.getString(5));
-//            } else {
-//                return false;
-//            }
-//        } catch (SQLException ex) {
-//            System.out.println("Error con la base de datos: " + ex.getMessage());
-//        }
-//        return true; //aunque puede ser que se haya producido la excepción.  contamos conn el mensaje
-//    }
-    public Producto buscaRegistro2(String nombreBuscar) {
-        Producto producto = null;
-        ResultSet rs;
-        PreparedStatement st;
-        // Sustituimos la variable por un ?
-        String sentencia = "SELECT * from PRODUCTOS where nombre= ?";
-        System.out.println(sentencia);
-
-        try {
-            st = conexion.prepareStatement(sentencia);
-            //Pasamos los valores a cada uno de los interrogantes
-            //comenzamos numerando por el 1
-            st.setString(1, nombreBuscar);
-            // En este caso te pediría que fuera un entero ---> st.setInt(2,20);
-            rs = st.executeQuery();
-            if (rs.next()) { //si el puntero no apunta a nada, pues no entra al if, no quiero mostrar la ventana.
-
-                producto = new Producto(rs.getInt(1), rs.getString(2), rs.getInt(3),
-                        rs.getString(4), rs.getString(5));
-            } else {
-                return null;
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error con la base de datos: " + ex.getMessage());
-        }
-        return producto;
-    }
-
-    public void cierraResultSet(ResultSet rs) {
-        try {
-            //cerramos el rs. porque garbage no puede eliminar el heap
-            rs.close();
-        } catch (SQLException ex) {
-            System.out.println("Error con la base de datos: " + ex.getMessage());
-        }
-    }
-
-    public void recorreResultado(ResultSet rs) {
-        try {
-            while (rs.next()) {
-                System.out.println(rs.getString(1) + "\t" + rs.getString(2)
-                        + "\t" + rs.getString(3) + "\t" + rs.getString(4));
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error sql: " + ex.getMessage());
-        }
-    }
-//
-//    public void alta(Alumno al) {
-//        abrirConexion();
-//        int n = al.getNota()[0];
-//
-//        String cadena = "INSERT INTO alumnos (nombre, nota1, nota2, nota3) VALUES ('"
-//                + al.getNombre() + "',  '" + al.getNota(0) + "',  '" + al.getNota(1) + "',  '" + al.getNota(2) + "')";
-//
-//        ejecutaUpdate(cadena);
-//        cerrarConexion();
-//    }
-    // Abre la conexión , realiza la consulta, pasa todos los alumnos a un ArrayList, cierra las conexiones y devuelve el ArrayList
-
     /**
      * Método para recorrer
      *
      * @return
      */
-    public ArrayList<Producto> listado() {
+    public ArrayList<Producto> listadoProductos() {
         abrirConexion();
         String sentencia = "SELECT * from productos";
         ResultSet rs;
@@ -233,5 +113,23 @@ public class DataBase {
 
     public void ordenarListado(ArrayList<Producto> productos) {
         Collections.sort(productos);
+    }
+
+    public void altaProducto(Producto producto) {
+        abrirConexion();
+        String sentencia = "insert into productos (id_prod, nombre, id_proveedor, descripcion, tipo) values (sec_producto.nextval,?,?,?,?)";
+        PreparedStatement st = null;
+        try {
+            st = conexion.prepareStatement(sentencia);
+            st.setString(1, producto.getNombre());
+            st.setInt(2, producto.getIdProveedor());
+            st.setString(3, producto.getDescripcion());
+            st.setString(4, producto.getTipo());
+            st.executeUpdate();
+            st.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        cerrarConexion();
     }
 }
