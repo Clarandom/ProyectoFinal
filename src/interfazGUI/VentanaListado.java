@@ -55,7 +55,7 @@ public class VentanaListado extends JFrame {
     public void muestraFilas() {
         String datos[];
         for (Producto pro : productos) {
-            datos = pro.getArrayAlumno();
+            datos = pro.getArrayProducto();
             modelo.addRow(datos);
         }
 

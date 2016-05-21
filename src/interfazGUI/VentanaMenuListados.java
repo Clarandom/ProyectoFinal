@@ -16,7 +16,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 /**
- *s
+ * s
+ *
  * @author Clara
  */
 public class VentanaMenuListados extends JFrame implements ActionListener, WindowListener {
@@ -55,13 +56,13 @@ public class VentanaMenuListados extends JFrame implements ActionListener, Windo
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "0":
-               VentanaListado vL = new VentanaListado(db.listado());
+                VentanaListado vL = new VentanaListado(db.listadoProductos());
                 break;
             case "1":
-               
+          VentanaListadoProveedor vP = new VentanaListadoProveedor(db);
                 break;
             case "2":
-             
+
                 break;
             default:
                 System.out.println("Opcion no Valida.");
@@ -71,37 +72,37 @@ public class VentanaMenuListados extends JFrame implements ActionListener, Windo
 
     @Override
     public void windowOpened(WindowEvent e) {
-  //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowClosing(WindowEvent e) {
-    //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowClosed(WindowEvent e) {
-   //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowIconified(WindowEvent e) {
-  //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowDeiconified(WindowEvent e) {
-  //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowActivated(WindowEvent e) {
-  //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowDeactivated(WindowEvent e) {
-   //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
