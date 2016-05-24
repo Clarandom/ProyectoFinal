@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package conexionBaseDeDatos;
 
 import gestionProducto.Producto;
@@ -18,20 +13,23 @@ import java.util.logging.Logger;
 import oracle.jdbc.driver.OracleDriver;
 
 /**
+ * Clase que nos permite realizar una conexión con la base de datos, y realizar
+ * diferentes consultas sobre esta.
  *
- * @author Clara
+ * @author Clara Subirón
+ * @version 24/05/2016
  */
 public class DataBase {
 
-    private Connection conexion = null;
+    private Connection conexion;
     private String servidorOracle = "jdbc:oracle:thin:@localhost:1521";
-    private String dataBase = null;
-    private String user = null;
-    private String password = null;
+    private String dataBase;
+    private String user;
+    private String password;
 
     /**
-     * Constructor para determinar un nombre de base de datos, usuario y
-     * contraseña para el servidor oracle. También se registra el driver de
+     * Constructor para determinar un nombre, usuario y contraseña de la base de
+     * datos sobre la que nos conectaremos. También se registra el driver de
      * Oracle.
      *
      * @param dataBase nombre de la base de datos
@@ -59,8 +57,6 @@ public class DataBase {
         try {
             conexion = DriverManager.getConnection(servidorOracle
                     + ":" + dataBase, user, password);
-            System.out.println(" Parece ser que nos hemos conectado");
-            //    conexion.setAutoCommit(false);
             estado = true;
         } catch (SQLException e) {
             System.out.println("SQL Exception:\n" + e.toString());
@@ -83,16 +79,17 @@ public class DataBase {
     }
 
     /**
-     * Método para recorrer
+     * Método para recorrer la tabla Productos de la Base de Datos. Cada fila
+     * creará un objeto Producto que irá almacenando en un ArrayList.
      *
-     * @return
+     * @return ArrayList de productos
      */
     public ArrayList<Producto> listadoProductos() {
         abrirConexion();
         String sentencia = "SELECT * from productos";
         ResultSet rs;
         PreparedStatement st;
-        ArrayList<Producto> productos = new ArrayList<Producto>();
+        ArrayList<Producto> productos = new ArrayList<>();
         try {
             st = conexion.prepareStatement(sentencia);
             rs = st.executeQuery();
@@ -100,17 +97,24 @@ public class DataBase {
                 productos.add(new Producto(rs.getInt(1), rs.getString(2), rs.getInt(3),
                         rs.getString(4), rs.getString(5)));
             }
-
             st.close();
             rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
+        //método para ordenar alfabéticamente los productos, gracias a la interfaz Comparable.
         Collections.sort(productos);
         cerrarConexion();
         return productos;
     }
 
+    /**
+     * Método listadoProductos() con un filtro por nombre de Proveedor(Razón
+     * social), por lo que requiere hcer uso también de la tabla Proveedores.
+     *
+     * @param nombre nombre del producto que buscará.
+     * @return ArrayList de productos
+     */
     public ArrayList<Producto> listadoProductos(String nombre) {
         abrirConexion();
         String sentencia = "SELECT p.id_prod, p.nombre, p.id_proveedor, p.descripcion, p.tipo "
@@ -118,7 +122,7 @@ public class DataBase {
                 + "where pv.razon_social = ?";
         ResultSet rs;
         PreparedStatement st;
-        ArrayList<Producto> productos = new ArrayList<Producto>();
+        ArrayList<Producto> productos = new ArrayList<>();
         try {
             st = conexion.prepareStatement(sentencia);
             st.setString(1, nombre);
@@ -131,11 +135,18 @@ public class DataBase {
             rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
-        };
+        }
         cerrarConexion();
         return productos;
     }
 
+    /**
+     * Método listadoProductos() con un filtro por número de pedido firme, por
+     * lo que requiere hcer uso también de la tabla Linea_pedido_firme.
+     *
+     * @param idPedidoFirme id del pedido firme que buscará.
+     * @return ArrayList de productos
+     */
     public ArrayList<Producto> listadoProductos(int idPedidoFirme) {
         abrirConexion();
         String sentencia = "SELECT p.id_prod, p.nombre, p.id_proveedor, p.descripcion, p.tipo "
@@ -143,7 +154,7 @@ public class DataBase {
                 + "where l.id_ped_firme = ?";
         ResultSet rs;
         PreparedStatement st;
-        ArrayList<Producto> productos = new ArrayList<Producto>();
+        ArrayList<Producto> productos = new ArrayList<>();
         try {
             st = conexion.prepareStatement(sentencia);
             st.setInt(1, idPedidoFirme);
@@ -161,14 +172,19 @@ public class DataBase {
         return productos;
     }
 
-    public void ordenarListado(ArrayList<Producto> productos) {
-        Collections.sort(productos);
-    }
-
-    public void altaProducto(Producto producto) {
+    /**
+     * Método que recibe un producto y lo da de alta en la base de datos.
+     *
+     * @param producto nuevo producto a insertar en la base de datos.
+     * @return true si no ha capturado ninguna excepción.
+     */
+    public boolean altaProducto(Producto producto) {
         abrirConexion();
-        String sentencia = "insert into productos (id_prod, nombre, id_proveedor, descripcion, tipo) values (sec_producto.nextval,?,?,?,?)";
-        PreparedStatement st = null;
+        boolean altaCorrecta = false;
+        //la id del producto se calculará gracias a la secuencia sec_producto.
+        String sentencia = "insert into productos (id_prod, nombre, id_proveedor, "
+                + "descripcion, tipo) values (sec_producto.nextval,?,?,?,?)";
+        PreparedStatement st;
         try {
             st = conexion.prepareStatement(sentencia);
             st.setString(1, producto.getNombre());
@@ -177,32 +193,55 @@ public class DataBase {
             st.setString(4, producto.getTipo());
             st.executeUpdate();
             st.close();
+            altaCorrecta = true;
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
         cerrarConexion();
+        return altaCorrecta;
     }
 
-    public void bajaProducto(int idProducto) {
+    /**
+     * Método que recibe un producto y lo da de baja en la base de datos.
+     *
+     * @param idProducto id del producto que se desea borrar.
+     * @return true si no captura ninguna excepción.
+     */
+    public boolean bajaProducto(int idProducto) {
         abrirConexion();
+        boolean bajaCorrecta = false;
         String sentencia = "delete from productos where id_prod = ?";
-        PreparedStatement st = null;
+        PreparedStatement st;
         try {
             st = conexion.prepareStatement(sentencia);
             st.setInt(1, idProducto);
             st.executeUpdate();
             st.close();
+            bajaCorrecta = true;
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
         cerrarConexion();
+        return bajaCorrecta;
     }
 
-    public void modificaProducto(int idProducto, String nombre, int idProveedor, String descripcion, String tipo) {
+    /**
+     * Método que modifica un producto en la base de datos. Le pasaremos como
+     * parámetros todos los atributos para modificar, excepto la id que se
+     * utilizará para buscar el registro en la tabla productos.
+     *
+     * @param idProducto id del producto a buscar.
+     * @param nombre nuevo nombre del producto.
+     * @param idProveedor nueva id del producto.
+     * @param descripcion nueva descripción del producto.
+     * @param tipo nuevo tipo del producto.
+     * @return true si se realiza correctamente.
+     */
+    public boolean modificaProducto(int idProducto, String nombre, int idProveedor, String descripcion, String tipo) {
         abrirConexion();
+        boolean modificacionCorrecta = false;
         String sentencia = "update productos set nombre = ?, id_proveedor = ?, descripcion = ?, tipo = ? where id_prod = ?";
         PreparedStatement st;
-        
         try {
             st = conexion.prepareStatement(sentencia);
             st.setString(1, nombre);
@@ -212,12 +251,22 @@ public class DataBase {
             st.setInt(5, idProducto);
             st.executeUpdate();
             st.close();
-            //cerrarConexion();
+            modificacionCorrecta = true;
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
+        cerrarConexion();
+        return modificacionCorrecta;
     }
 
+    /**
+     * Método para buscar un producto en la tabla productos. Devolverá un nuevo
+     * producto con los datos del producto encontrado.
+     *
+     * @param idBuscar id del producto que va a buscar.
+     * @return Producto con los atributos del producto encontrado. Null si no
+     * encuentra la id del producto.
+     */
     public Producto buscaProducto(int idBuscar) {
         abrirConexion();
 
