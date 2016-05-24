@@ -59,10 +59,12 @@ public class VentanaGestionProductos extends JFrame implements ActionListener, W
 
                 break;
             case "1":
+                
+                VentanaBaja vB = new VentanaBaja(db);
 
                 break;
             case "2":
-
+                 VentanaModificacion vM = new VentanaModificacion(db);
                 break;
 
             case "3":

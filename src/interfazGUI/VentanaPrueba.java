@@ -16,6 +16,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,7 +29,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Clara
  */
-public class VentanaListadoProveedor extends JFrame implements ActionListener, WindowListener {
+public class VentanaPrueba extends JFrame implements ActionListener, WindowListener {
 
     //  JLabel etiquetaBuscar;
     JTextField buscar;
@@ -40,13 +41,13 @@ public class VentanaListadoProveedor extends JFrame implements ActionListener, W
     ArrayList<Producto> productos = new ArrayList<>();
     DataBase db;
 
-    public VentanaListadoProveedor(DataBase db) {
+    public VentanaPrueba(DataBase db) {
         this.db = db;
         this.setTitle("Listado");
         this.setVisible(true);
         initComponents();
         this.pack();
-        this.setSize(400, 200);
+        this.setSize(800, 500);
     }
 
     public void initComponents() {
@@ -54,7 +55,7 @@ public class VentanaListadoProveedor extends JFrame implements ActionListener, W
         contenedor.setLayout(new BorderLayout());
         contenedorTabla = new JPanel();
         contenedorBotones = new JPanel();
-        contenedorBotones.setLayout(new GridLayout(1, 2, 5, 5));
+        contenedorBotones.setLayout(new BorderLayout());
         //    etiquetaBuscar = new JLabel("Buscar: ");
         buscar = new JTextField();
         bBuscar = new JButton("Buscar");
@@ -62,14 +63,24 @@ public class VentanaListadoProveedor extends JFrame implements ActionListener, W
         bBuscar.addActionListener(this);
         // contenedorTabla.setLayout(new FlowLayout());
         //    contenedorBotones.add(etiquetaBuscar);
-        contenedorBotones.add(buscar);
-        contenedorBotones.add(bBuscar);
-        contenedor.add(contenedorBotones, BorderLayout.NORTH);
+
+        String[] petStrings = {"Bird", "Caaaaaaaaaaaaaaaaaaaaaaaaaaaat", "Dog", "Rabbit", "Pig"};
+
+//Create the combo box, select item at index 4.
+//Indices start at 0, so 4 specifies the pig.
+        JComboBox petList = new JComboBox(petStrings);
+        petList.setSelectedIndex(4);
+        petList.addActionListener(this);
+        contenedorBotones.add(petList, BorderLayout.NORTH);
+        contenedorBotones.add(buscar, BorderLayout.EAST);
+   //     contenedorBotones.add(bBuscar, BorderLayout.LINE_END);
+
+        contenedor.add(contenedorBotones, BorderLayout.LINE_START);
         creoTabla();
         //Creamos un JscrollPane y le agregamos la JTable
         JScrollPane scrollPane = new JScrollPane(table);
         //Agregamos el JScrollPane al contenedor
-        contenedor.add(scrollPane, BorderLayout.CENTER);
+        contenedor.add(scrollPane, BorderLayout.LINE_END);
         // muestraFilas();
     }
 

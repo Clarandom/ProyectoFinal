@@ -59,10 +59,11 @@ public class VentanaMenuListados extends JFrame implements ActionListener, Windo
                 VentanaListado vL = new VentanaListado(db.listadoProductos());
                 break;
             case "1":
-          VentanaListadoProveedor vP = new VentanaListadoProveedor(db);
+        VentanaListadoProveedor vP = new VentanaListadoProveedor(db);
+           
                 break;
             case "2":
-
+                VentanaListadoPedido vPed = new VentanaListadoPedido(db);
                 break;
             default:
                 System.out.println("Opcion no Valida.");

@@ -35,6 +35,13 @@ public class Producto implements Comparable<Producto> {
         this.tipo = tipo;
     }
 
+    public Producto(String nombre, int idProveedor, String descripcion, String tipo) {
+        this.nombre = nombre;
+        this.idProveedor = idProveedor;
+        this.descripcion = descripcion;
+        this.tipo = tipo;
+    }
+
     /**
      * @return the idProducto
      */
@@ -112,10 +119,9 @@ public class Producto implements Comparable<Producto> {
     @Override
     public int compareTo(Producto p) {
         return this.nombre.compareToIgnoreCase(p.nombre);
-
     }
 
-    public String[] getArrayAlumno() {
+    public String[] getArrayProducto() {
         String[] datosProducto = new String[5];
         datosProducto[0] = Integer.toString(idProducto);
         datosProducto[1] = nombre;

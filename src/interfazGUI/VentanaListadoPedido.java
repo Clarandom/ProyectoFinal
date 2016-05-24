@@ -28,7 +28,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Clara
  */
-public class VentanaListadoProveedor extends JFrame implements ActionListener, WindowListener {
+public class VentanaListadoPedido extends JFrame implements ActionListener, WindowListener {
 
     //  JLabel etiquetaBuscar;
     JTextField buscar;
@@ -40,7 +40,7 @@ public class VentanaListadoProveedor extends JFrame implements ActionListener, W
     ArrayList<Producto> productos = new ArrayList<>();
     DataBase db;
 
-    public VentanaListadoProveedor(DataBase db) {
+    public VentanaListadoPedido(DataBase db) {
         this.db = db;
         this.setTitle("Listado");
         this.setVisible(true);
@@ -98,7 +98,7 @@ public class VentanaListadoProveedor extends JFrame implements ActionListener, W
     public void actionPerformed(ActionEvent ae) {
         switch (ae.getActionCommand()) {
             case "buscar":
-                productos = db.listadoProductos(buscar.getText());
+                productos = db.listadoProductos(Integer.parseInt(buscar.getText()));
                 modelo.setRowCount(0);
                 muestraFilas();
                 break;
