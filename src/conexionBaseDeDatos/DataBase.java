@@ -22,7 +22,7 @@ import oracle.jdbc.driver.OracleDriver;
 public class DataBase {
 
     private Connection conexion;
-    private String servidorOracle = "jdbc:oracle:thin:@localhost:1521";
+    private String servidorOracle = "jdbc:oracle:thin:@localhost:1521"; //servidor + host + port 
     private String dataBase;
     private String user;
     private String password;
