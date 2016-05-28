@@ -1,8 +1,6 @@
 package conexionBaseDeDatos;
 
 import gestionProducto.Producto;
-import java.io.IOException;
-import java.io.File;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,29 +18,27 @@ import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
-import org.xml.sax.SAXException;
 
+/**
+ * Clase que permite escribir un ArrayList de Productos en un archivo .xml con
+ * las etiquetas deseadas.
+ *
+ * @author Clara Subirón
+ * @version 28/05/2016
+ */
 public class DocumentoXML {
 
-    private static Document pasarXmlADom(String nombreFichero) {
-
-        Document doc = null;
-        try {
-            //Creamos una nueva instancia de un fabricante de constructores de documentos
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            // A partir de la instancia anterior, fabricamos un constructor
-            // de documentos, que procesará el XML.
-            DocumentBuilder db = dbf.newDocumentBuilder();
-            // Procesamos el documento (almacenado en un archivo) y lo convetimos en un árbol DOM.
-            doc = db.parse(new File(nombreFichero));
-            return doc;
-        } catch (ParserConfigurationException | SAXException | IOException ex) {
-            System.out.println("Error Archivo " + nombreFichero);
-        }
-        return doc;
-    }
-
-    public static void escriboArrayList(String nombreDocumento, ArrayList<Producto> listado) {
+    /**
+     * Método para escribir un ArrayList en un documento xml, así como para la
+     * creación de las etiquetas que contendrá. Devuelve true si lo realiza
+     * correctamente.
+     *
+     * @param nombreDocumento nombre que tendrá el documento xml
+     * @param listado ArrayList de productos que escribiremos en el documento.
+     * @return true si escribe correctamente.
+     */
+    public static boolean escriboArrayList(String nombreDocumento, ArrayList<Producto> listado) {
+        Boolean correcto = false;
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db;
 
@@ -54,8 +50,8 @@ public class DocumentoXML {
             document.setXmlVersion("1.0");
 
             Element raiz = document.getDocumentElement();
-            System.out.println("Raiz: " + raiz.getNodeName());
 
+            //Me recorro productos para añadir a cada uno de ellos las etiquetas deseadas.
             for (Producto producto : listado) {
                 Element etiquetaProducto = document.createElement("Producto");
                 Element etiquetaProveedor = document.createElement("id_proveedor");
@@ -80,16 +76,17 @@ public class DocumentoXML {
                 etiquetaProducto.setAttribute("id", Integer.toString(producto.getIdProducto()));
 
                 raiz.appendChild(etiquetaProducto);
-                //Generate XML
+
                 Source source = new DOMSource(document);
-                //Indicamos donde lo queremos almacenar
+                //Indico la ubicación del fichero.
                 Result result = new StreamResult(new java.io.File("fichero/" + nombreDocumento + ".xml"));
                 Transformer transformer = TransformerFactory.newInstance().newTransformer();
-                //añadmos los atributos XML
+                //Añado los atributos xml.
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
                 transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
                 transformer.transform(source, result);
-                //importante !! cerramos el ResultSet
+
+                correcto = true;
             }
         } catch (ParserConfigurationException ex) {
             System.out.println("Error escribiendo Fichero");
@@ -98,5 +95,6 @@ public class DocumentoXML {
         } catch (TransformerException ex) {
             System.out.println("Error escribiendo Fichero");
         }
+        return correcto;
     }
 }

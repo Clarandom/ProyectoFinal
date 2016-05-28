@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<productos>
+<Producto id="3">
+<id_proveedor>2</id_proveedor>
+<nombre>CAMISETA</nombre>
+<descripcion>Camiseta básica amarilla</descripcion>
+<tipo>A</tipo>
+</Producto>
+<Producto id="6">
+<id_proveedor>3</id_proveedor>
+<nombre>CASCO</nombre>
+<descripcion>Casco de bicicleta infantil</descripcion>
+<tipo>D</tipo>
+</Producto>
+<Producto id="30">
+<id_proveedor>2</id_proveedor>
+<nombre>FALDA</nombre>
+<descripcion>Falda larga violeta</descripcion>
+<tipo>X</tipo>
+</Producto>
+<Producto id="1">
+<id_proveedor>4</id_proveedor>
+<nombre>JUEGO</nombre>
+<descripcion>Género acción </descripcion>
+<tipo>A</tipo>
+</Producto>
+<Producto id="7">
+<id_proveedor>5</id_proveedor>
+<nombre>MANZANA</nombre>
+<descripcion>Royal Gala</descripcion>
+<tipo>E</tipo>
+</Producto>
+<Producto id="2">
+<id_proveedor>5</id_proveedor>
+<nombre>MANZANA</nombre>
+<descripcion>Golden Delicious</descripcion>
+<tipo>B</tipo>
+</Producto>
+<Producto id="8">
+<id_proveedor>1</id_proveedor>
+<nombre>PASTEL</nombre>
+<descripcion>Pastel de manzana</descripcion>
+<tipo>E</tipo>
+</Producto>
+<Producto id="5">
+<id_proveedor>1</id_proveedor>
+<nombre>PASTEL</nombre>
+<descripcion>Pastel tres chocolates</descripcion>
+<tipo>M</tipo>
+</Producto>
+<Producto id="4">
+<id_proveedor>5</id_proveedor>
+<nombre>PERA</nombre>
+<descripcion>Blanca de Aranjuez</descripcion>
+<tipo>Z</tipo>
+</Producto>
+<Producto id="49">
+<id_proveedor>3</id_proveedor>
+<nombre>PULSERA</nombre>
+<descripcion>Pulsera de perlas</descripcion>
+<tipo>R</tipo>
+</Producto>
+<Producto id="48">
+<id_proveedor>3</id_proveedor>
+<nombre>RELOJ</nombre>
+<descripcion>De acero.</descripcion>
+<tipo>M</tipo>
+</Producto>
+</productos>

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package gestionProducto;
 
 /**
@@ -10,7 +5,7 @@ package gestionProducto;
  *
  * @author Clara
  */
-public class Producto implements Comparable<Producto> {
+public class Producto {
 
     private int idProducto;
     private String nombre;
@@ -21,11 +16,11 @@ public class Producto implements Comparable<Producto> {
     /**
      * Constructor al que le paso todos los atributos de la clase Producto.
      *
-     * @param idProducto
-     * @param nombre
-     * @param idProveedor
-     * @param descripcion
-     * @param tipo
+     * @param idProducto id del producto
+     * @param nombre nombre del producto
+     * @param idProveedor id del proveedor que comercializa el producto
+     * @param descripcion descripción del producto
+     * @param tipo tipo del producto.
      */
     public Producto(int idProducto, String nombre, int idProveedor, String descripcion, String tipo) {
         this.idProducto = idProducto;
@@ -35,6 +30,16 @@ public class Producto implements Comparable<Producto> {
         this.tipo = tipo;
     }
 
+    /**
+     * Constructor al que le paso todos los atributos de la clase Producto
+     * excepto la id, ya que para el alta se la asignará automáticamente la bdd
+     * gracias a una secuencia.
+     *
+     * @param nombre nombre del producto
+     * @param idProveedor id del proveedor que comercializa el producto
+     * @param descripcion descripción del producto
+     * @param tipo tipo del producto.
+     */
     public Producto(String nombre, int idProveedor, String descripcion, String tipo) {
         this.nombre = nombre;
         this.idProveedor = idProveedor;
@@ -43,48 +48,35 @@ public class Producto implements Comparable<Producto> {
     }
 
     /**
-     * @return the idProducto
+     * Método que devuelve la id del producto.
+     *
+     * @return idProducto
      */
     public int getIdProducto() {
         return idProducto;
     }
 
     /**
-     * @param idProducto the idProducto to set
-     */
-    public void setIdProducto(int idProducto) {
-        this.idProducto = idProducto;
-    }
-
-    /**
-     * @return the nombre
+     * Método que devuelve el nombre del producto.
+     *
+     * @return nombre
      */
     public String getNombre() {
         return nombre;
     }
 
     /**
-     * @param nombre the nombre to set
-     */
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    /**
-     * @return the idProveedor
+     * Método que devuelve la id del proveedor.
+     *
+     * @return idProveedor
      */
     public int getIdProveedor() {
         return idProveedor;
     }
 
     /**
-     * @param idProveedor the idProveedor to set
-     */
-    public void setIdProveedor(int idProveedor) {
-        this.idProveedor = idProveedor;
-    }
-
-    /**
+     * Método que devuelve la descripción del producto.
+     *
      * @return the descripcion
      */
     public String getDescripcion() {
@@ -92,13 +84,8 @@ public class Producto implements Comparable<Producto> {
     }
 
     /**
-     * @param descripcion the descripcion to set
-     */
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
-
-    /**
+     * Método que deuvelve el tipo del producto.
+     *
      * @return the tipo
      */
     public String getTipo() {
@@ -106,21 +93,11 @@ public class Producto implements Comparable<Producto> {
     }
 
     /**
-     * @param tipo the tipo to set
+     * Método que inroduce todos los atrbutos en un array de String, y lo
+     * devuelve.
+     *
+     * @return array con los datos del producto.
      */
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
-    }
-
-    public String toString() {
-        return idProducto + " " + nombre + " " + idProveedor + " " + descripcion + " " + tipo;
-    }
-
-    @Override
-    public int compareTo(Producto p) {
-        return this.nombre.compareToIgnoreCase(p.nombre);
-    }
-
     public String[] getArrayProducto() {
         String[] datosProducto = new String[5];
         datosProducto[0] = Integer.toString(idProducto);

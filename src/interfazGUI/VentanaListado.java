@@ -5,12 +5,11 @@ import gestionProducto.Producto;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -24,7 +23,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Clara Subirón
  *
  */
-public class VentanaListado extends JFrame implements ActionListener, WindowListener {
+public class VentanaListado extends JFrame implements ActionListener {
 
     JTextField buscarPe, buscarPro;
     JButton bBuscarPe, bBuscarPro, botones[];
@@ -36,7 +35,11 @@ public class VentanaListado extends JFrame implements ActionListener, WindowList
     JLabel textoProveedor, textoPedido;
 
     /**
-     * Constructor al que le paso la DataBase completa.
+     * Constructor que recibe la base de datos como parámetro y se encarga de
+     * hacer visible la ventana, así como inicializar todos los componentes
+     * necesarios para ésta, gracias a la llamada al método initComponenents().
+     *
+     * @param db nueva DataBase
      */
     public VentanaListado(DataBase db) {
         this.db = db;
@@ -47,6 +50,11 @@ public class VentanaListado extends JFrame implements ActionListener, WindowList
         this.setSize(800, 200);
     }
 
+    /**
+     * Método que inicializa todos los componentes de la ventana y los añade a
+     * un contenedor.
+     *
+     */
     public void initComponents() {
         //inicializo "contenedor" (será el que me permita dividir la ventana 
         //final en 2: contenedorIzquierda y tabla)
@@ -63,7 +71,6 @@ public class VentanaListado extends JFrame implements ActionListener, WindowList
         JScrollPane scrollPane = new JScrollPane(table);
         contenedor.add(contenedorIzquierda);
         contenedor.add(scrollPane);
-
     }
 
     /**
@@ -98,7 +105,7 @@ public class VentanaListado extends JFrame implements ActionListener, WindowList
         contenedorBuscar.add(bBuscarPro);
         //paso a diseñar contenedor Opciones.
         contenedorOpciones = new JPanel();
-        String textoBotones[] = {"Listado Completo", "Limpiar Tabla", "Fin"};
+        String textoBotones[] = {"Completo", "Limpiar Tabla", "Fin"};
         contenedorOpciones.setLayout(new GridLayout(1, textoBotones.length));
         botones = new JButton[textoBotones.length];
         for (int i = 0; i < textoBotones.length; i++) {
@@ -129,9 +136,10 @@ public class VentanaListado extends JFrame implements ActionListener, WindowList
     }
 
     /**
-     * Métdo para añadir las filas con los datos de Producto.
+     * Métdo para añadir filas a la tabla con los datos de Producto.
      */
     public void muestraFilas() {
+        modelo.setRowCount(0);
         String datos[];
         for (Producto pro : productos) {
             datos = pro.getArrayProducto();
@@ -140,7 +148,66 @@ public class VentanaListado extends JFrame implements ActionListener, WindowList
     }
 
     /**
-     * Método que controla el botón que ha sido seleccionado.
+     * Método que busca productos por la id de pedido que se haya escrito en el
+     * cuadro de búsqueda correspondiente. Si introducimos una id válida muestra
+     * los productos encontrados en la tabla; de lo contrario nos mostrará un
+     * error.
+     */
+    private void buscaPedido() {
+        try {
+            productos = db.listadoProductos(Integer.parseInt(buscarPe.getText()));
+            if (productos.isEmpty()) {
+                ventanaError("Registro no encontrado");
+            } else {
+                muestraFilas();
+            }
+        } catch (NumberFormatException e) {
+            ventanaError("La ID del pedido debe ser un número");
+
+        }
+    }
+
+    /**
+     * Método que busca productos por el nombre de proveedor que se haya escrito
+     * en el cuadro de búsqueda correspondiente. Si introducimos proveedor
+     * existente nos muestra los productos encontrados en la tabla; de lo
+     * contrario nos mostrará un aviso. Se permite buscar por cualquier carácter
+     * debido a que son permitidos en los nombres.
+     *
+     */
+    private void buscaProveedor() {
+       
+        productos = db.listadoProductos(buscarPro.getText());
+        if (productos.isEmpty()) {
+            ventanaError("Registro no encontrado");
+        } else {
+            muestraFilas();
+        }
+    }
+
+    private void buscaProductos() {
+        productos = db.listadoProductos();
+        if (productos.isEmpty()) {
+            ventanaError("No hay productos.");
+        } else {
+            muestraFilas();
+        }
+    }
+
+    /**
+     * Crea una ventana emergente cuya finalidad es mostrar un error.
+     *
+     * @param cadena mensaje que mostrará la ventana
+     */
+    private void ventanaError(String cadena) {
+        JOptionPane.showMessageDialog(
+                this, cadena,
+                "Error", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    /**
+     * Método que controla el botón que ha sido seleccionado para realizar una
+     * acción determinada.
      *
      * @param ae acción realizada.
      */
@@ -148,61 +215,20 @@ public class VentanaListado extends JFrame implements ActionListener, WindowList
     public void actionPerformed(ActionEvent ae) {
         switch (ae.getActionCommand()) {
             case "buscarPe":
-                productos = db.listadoProductos(Integer.parseInt(buscarPe.getText()));
-                modelo.setRowCount(0);
-                muestraFilas();
+                buscaPedido();
                 break;
             case "buscarPro":
-                productos = db.listadoProductos(buscarPro.getText());
-                modelo.setRowCount(0);
-                muestraFilas();
+                buscaProveedor();
                 break;
-            case "Listado Completo":
-                productos = db.listadoProductos();
-                modelo.setRowCount(0);
-                muestraFilas();
+            case "Completo":
+                buscaProductos();
                 break;
             case "Limpiar Tabla":
                 modelo.setRowCount(0);
                 break;
             case "Fin":
+                this.dispose();
                 break;
         }
     }
-
-    @Override
-    public void windowOpened(WindowEvent e) {
-        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowClosing(WindowEvent e) {
-        //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowClosed(WindowEvent e) {
-        // throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowIconified(WindowEvent e) {
-        //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowDeiconified(WindowEvent e) {
-        //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowActivated(WindowEvent e) {
-        //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void windowDeactivated(WindowEvent e) {
-        //   throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
 }

@@ -43,7 +43,6 @@ public class DataBase {
         try {
             DriverManager.registerDriver(new OracleDriver());
         } catch (SQLException sqle) {
-            sqle.printStackTrace();
         }
     }
 
@@ -72,7 +71,6 @@ public class DataBase {
     public void cerrarConexion() {
         try {
             conexion.close();
-            System.out.println("Se cerró :D");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -86,7 +84,7 @@ public class DataBase {
      */
     public ArrayList<Producto> listadoProductos() {
         abrirConexion();
-        String sentencia = "SELECT * from productos";
+        String sentencia = "SELECT * from productos order by nombre";
         ResultSet rs;
         PreparedStatement st;
         ArrayList<Producto> productos = new ArrayList<>();
@@ -102,8 +100,7 @@ public class DataBase {
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //método para ordenar alfabéticamente los productos, gracias a la interfaz Comparable.
-        Collections.sort(productos);
+
         cerrarConexion();
         return productos;
     }
@@ -112,7 +109,7 @@ public class DataBase {
      * Método listadoProductos() con un filtro por nombre de Proveedor(Razón
      * social), por lo que requiere hcer uso también de la tabla Proveedores.
      *
-     * @param nombre nombre del producto que buscará.
+     * @param nombre nombre del Proveedor que buscará.
      * @return ArrayList de productos
      */
     public ArrayList<Producto> listadoProductos(String nombre) {
@@ -167,7 +164,7 @@ public class DataBase {
             rs.close();
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
-        };
+        }
         cerrarConexion();
         return productos;
     }
@@ -269,7 +266,6 @@ public class DataBase {
      */
     public Producto buscaProducto(int idBuscar) {
         abrirConexion();
-
         Producto producto = null;
         ResultSet rs;
         PreparedStatement st;
@@ -297,6 +293,29 @@ public class DataBase {
         }
         cerrarConexion();
         return producto;
+    }
+
+    public boolean buscaProveedor(int idBuscar) {
+        abrirConexion();
+        boolean existe = false;
+        ResultSet rs;
+        PreparedStatement st;
+        String sentencia = "SELECT * from PROVEEDORES where id_proveedor= ?";
+        try {
+            st = conexion.prepareStatement(sentencia);
+            //Pasamos los valores a cada uno de los interrogantes
+            //comenzamos numerando por el 1
+            st.setInt(1, idBuscar);
+            // En este caso te pediría que fuera un entero ---> st.setInt(2,20);
+            rs = st.executeQuery();
+            existe = rs.next();
+            st.close();
+            rs.close();
+        } catch (SQLException ex) {
+            System.out.println("Error con la base de datos: " + ex.getMessage());
+        }
+        cerrarConexion();
+        return existe;
     }
 
 }
