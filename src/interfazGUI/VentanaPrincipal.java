@@ -1,6 +1,12 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package interfazGUI;
 
 import conexionBaseDeDatos.DataBase;
+import conexionBaseDeDatos.DocumentoXML;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,41 +19,31 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
- * Interfaz del menú principal del programa.
  *
  * @author Clara
  */
 public class VentanaPrincipal extends JFrame implements ActionListener, WindowListener {
 
+    JLabel titulo;
     JPanel contenedor;
     JButton botones[];
     DataBase db;
-    JLabel titulo;
-    /**
-     * Constructor que recibe como parámetro la base de datos completa.
-     *
-     * @param db
-     */
-    public VentanaPrincipal(DataBase db) {
 
+    public VentanaPrincipal(DataBase db) {
         this.db = db;
-        this.setTitle("Menú principal");
+        this.setTitle("Gestión Productos");
         this.setVisible(true);
         initComponents();
         this.pack();
-       this.setSize(300, 300);
+        this.setSize(300, 300);
     }
 
-    /**
-     * Método para instanciar los elementos de la interfaz.
-     */
-    private void initComponents() {
-
+    public void initComponents() {
         titulo = new JLabel("CENTRAL DE COMPRAS", SwingConstants.CENTER);
-        String textoBotones[] = {"Gestionar Productos", "Consutar productos", "Fin"};
+        String textoBotones[] = {"Listado", "Alta Produco", "Baja Producto", "Modificar Producto", "Crear XML", "Cerrar"};
         botones = new JButton[textoBotones.length];
         contenedor = (JPanel) this.getContentPane();
-        contenedor.setLayout(new GridLayout(textoBotones.length + 5, 1, 5, 5));
+        contenedor.setLayout(new GridLayout(textoBotones.length + 1, 1, 5, 5));
         contenedor.add(titulo);
 
         for (int i = 0; i < textoBotones.length; i++) {
@@ -57,22 +53,34 @@ public class VentanaPrincipal extends JFrame implements ActionListener, WindowLi
             botones[i].addActionListener(this);
             contenedor.add(botones[i]);
         }
-        this.addWindowListener(this);
 
+        this.addWindowListener(this);
     }
 
-    @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "0":
-                VentanaGestionProductos vGP = new VentanaGestionProductos(db);
+
+                VentanaListado vP = new VentanaListado(db);
                 break;
             case "1":
-                VentanaMenuListados vL = new VentanaMenuListados(db);
+                VentanaAlta vA = new VentanaAlta(db);
+
                 break;
             case "2":
-                fin();
+                VentanaBaja vB = new VentanaBaja(db);
+
                 break;
+
+            case "3":
+                VentanaModificacion vM = new VentanaModificacion(db);
+
+                break;
+            case "5":
+                DocumentoXML.escriboArrayList("productos", db.listadoProductos());
+
+                break;
+
             default:
                 System.out.println("Opcion no Valida.");
                 break;
@@ -80,44 +88,42 @@ public class VentanaPrincipal extends JFrame implements ActionListener, WindowLi
     }
 
     private void fin() {
-
         System.exit(0);
     }
 
     @Override
     public void windowOpened(WindowEvent e) {
-   //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowClosing(WindowEvent e) {
-        fin();
-    //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowClosed(WindowEvent e) {
-  //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowIconified(WindowEvent e) {
-  //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowDeiconified(WindowEvent e) {
-  //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowActivated(WindowEvent e) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowDeactivated(WindowEvent e) {
-    //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
