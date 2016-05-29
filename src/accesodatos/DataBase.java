@@ -1,26 +1,24 @@
-package conexionBaseDeDatos;
+package accesodatos;
 
-import gestionProducto.Producto;
+import gestionproductos.Producto;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import oracle.jdbc.driver.OracleDriver;
 
 /**
  * Clase que nos permite realizar una conexión con la base de datos, y realizar
- * diferentes consultas sobre esta.
+ * diferentes dmls sobre esta.
  *
  * @author Clara Subirón
  * @version 24/05/2016
  */
 public class DataBase {
-
     private Connection conexion;
     private String servidorOracle = "jdbc:oracle:thin:@localhost:1521"; //servidor + host + port 
     private String dataBase;
@@ -100,14 +98,14 @@ public class DataBase {
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         cerrarConexion();
         return productos;
     }
 
     /**
      * Método listadoProductos() con un filtro por nombre de Proveedor(Razón
-     * social), por lo que requiere hcer uso también de la tabla Proveedores.
+     * social) el cual le pasaré como parámetro, por lo que requiere hacer uso
+     * también de la tabla Proveedores.
      *
      * @param nombre nombre del Proveedor que buscará.
      * @return ArrayList de productos
@@ -138,8 +136,9 @@ public class DataBase {
     }
 
     /**
-     * Método listadoProductos() con un filtro por número de pedido firme, por
-     * lo que requiere hcer uso también de la tabla Linea_pedido_firme.
+     * Método listadoProductos() con un filtro por número de pedido firme, el
+     * cual le pasaré como parámetro, por lo que requiere hacer uso también de la
+     * tabla Linea_pedido_firme.
      *
      * @param idPedidoFirme id del pedido firme que buscará.
      * @return ArrayList de productos
@@ -182,20 +181,53 @@ public class DataBase {
         String sentencia = "insert into productos (id_prod, nombre, id_proveedor, "
                 + "descripcion, tipo) values (sec_producto.nextval,?,?,?,?)";
         PreparedStatement st;
+        if (!compruebaExistencia(producto)) {
+            try {
+                st = conexion.prepareStatement(sentencia);
+                st.setString(1, producto.getNombre());
+                st.setInt(2, producto.getIdProveedor());
+                st.setString(3, producto.getDescripcion());
+                st.setString(4, producto.getTipo());
+                st.executeUpdate();
+                st.close();
+                altaCorrecta = true;
+            } catch (SQLException ex) {
+                Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        cerrarConexion();
+        return altaCorrecta;
+    }
+
+    /**
+     * Comprueba si un producto ya está introducido en la base de datos (tiene
+     * el mismo proveedor, nombre y tipo) para no permitirte introducirlo
+     * nuevamente. Se requiere el proveedor porque un producto con iguales
+     * características puede ser vendido por otro proveedor diferente.
+     *
+     * @param producto a comprobar si existe en la base de datos.
+     * @return true si existe
+     */
+    public boolean compruebaExistencia(Producto producto) {
+        boolean existe = false;
+        String sentencia = "select * from productos where id_proveedor = ? and nombre = ? and tipo = ?";
+        ResultSet rs;
+        PreparedStatement st;
         try {
             st = conexion.prepareStatement(sentencia);
-            st.setString(1, producto.getNombre());
-            st.setInt(2, producto.getIdProveedor());
-            st.setString(3, producto.getDescripcion());
-            st.setString(4, producto.getTipo());
-            st.executeUpdate();
+            st.setString(2, producto.getNombre());
+            st.setInt(1, producto.getIdProveedor());
+            st.setString(3, producto.getTipo());
+            rs = st.executeQuery();
+            while (rs.next()) {
+                existe = true;
+            }
             st.close();
-            altaCorrecta = true;
         } catch (SQLException ex) {
             Logger.getLogger(DataBase.class.getName()).log(Level.SEVERE, null, ex);
         }
-        cerrarConexion();
-        return altaCorrecta;
+        return existe;
     }
 
     /**
@@ -271,7 +303,6 @@ public class DataBase {
         PreparedStatement st;
         // Sustituimos la variable por un ?
         String sentencia = "SELECT * from PRODUCTOS where id_prod = ?";
-
         try {
             st = conexion.prepareStatement(sentencia);
             //Pasamos los valores a cada uno de los interrogantes
@@ -295,6 +326,13 @@ public class DataBase {
         return producto;
     }
 
+    /**
+     * Método para buscar un proveedor en la base de datos. Devolverá true si lo
+     * encuentra, false si no existe.
+     *
+     * @param idBuscar id del proveedor que va a buscar.
+     * @return true si existe el proveedor.
+     */
     public boolean buscaProveedor(int idBuscar) {
         abrirConexion();
         boolean existe = false;
@@ -303,10 +341,7 @@ public class DataBase {
         String sentencia = "SELECT * from PROVEEDORES where id_proveedor= ?";
         try {
             st = conexion.prepareStatement(sentencia);
-            //Pasamos los valores a cada uno de los interrogantes
-            //comenzamos numerando por el 1
             st.setInt(1, idBuscar);
-            // En este caso te pediría que fuera un entero ---> st.setInt(2,20);
             rs = st.executeQuery();
             existe = rs.next();
             st.close();
@@ -317,5 +352,4 @@ public class DataBase {
         cerrarConexion();
         return existe;
     }
-
 }

@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <productos>
+<Producto id="95">
+<id_proveedor>5</id_proveedor>
+<nombre>a</nombre>
+<descripcion>bb</descripcion>
+<tipo>aaaa</tipo>
+</Producto>
+<Producto id="67">
+<id_proveedor>1</id_proveedor>
+<nombre>BIZCOCHO</nombre>
+<descripcion>Bizcocho de crema</descripcion>
+<tipo>M</tipo>
+</Producto>
 <Producto id="3">
 <id_proveedor>2</id_proveedor>
 <nombre>CAMISETA</nombre>
@@ -24,16 +36,28 @@
 <descripcion>Género acción </descripcion>
 <tipo>A</tipo>
 </Producto>
+<Producto id="2">
+<id_proveedor>5</id_proveedor>
+<nombre>MANZANA</nombre>
+<descripcion>Golden Delicious</descripcion>
+<tipo>B</tipo>
+</Producto>
 <Producto id="7">
 <id_proveedor>5</id_proveedor>
 <nombre>MANZANA</nombre>
 <descripcion>Royal Gala</descripcion>
 <tipo>E</tipo>
 </Producto>
-<Producto id="2">
-<id_proveedor>5</id_proveedor>
-<nombre>MANZANA</nombre>
-<descripcion>Golden Delicious</descripcion>
+<Producto id="89">
+<id_proveedor>3</id_proveedor>
+<nombre>MUCHITO</nombre>
+<descripcion>Infinito</descripcion>
+<tipo>S</tipo>
+</Producto>
+<Producto id="87">
+<id_proveedor>3</id_proveedor>
+<nombre>muchito</nombre>
+<descripcion>infinito</descripcion>
 <tipo>B</tipo>
 </Producto>
 <Producto id="8">

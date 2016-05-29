@@ -1,7 +1,7 @@
 package interfazGUI;
 
-import conexionBaseDeDatos.DataBase;
-import conexionBaseDeDatos.DocumentoXML;
+import accesodatos.DataBase;
+import accesodatos.DocumentoXML;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -64,6 +64,8 @@ public class VentanaPrincipal extends JFrame implements ActionListener, WindowLi
             botones[i].addActionListener(this);
             contenedor.add(botones[i]);
         }
+
+        this.addWindowListener(this);
     }
 
     /**
@@ -84,6 +86,7 @@ public class VentanaPrincipal extends JFrame implements ActionListener, WindowLi
      *
      * @param e acción realizada.
      */
+    @Override
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case "0":
@@ -116,28 +119,29 @@ public class VentanaPrincipal extends JFrame implements ActionListener, WindowLi
 
     @Override
     public void windowOpened(WindowEvent e) {
-        //     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowClosing(WindowEvent e) {
         System.exit(0);
-        //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowClosed(WindowEvent e) {
-        //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowIconified(WindowEvent e) {
-        //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
     public void windowDeiconified(WindowEvent e) {
-        //      throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -147,6 +151,6 @@ public class VentanaPrincipal extends JFrame implements ActionListener, WindowLi
 
     @Override
     public void windowDeactivated(WindowEvent e) {
-        //    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

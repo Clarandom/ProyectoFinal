@@ -1,9 +1,10 @@
-package gestionProducto;
+package gestionproductos;
 
 /**
  * Clase que representa un producto con sus correspondientes atributos.
  *
- * @author Clara
+ * @author Clara Subirón
+ * @version 28/05/2016
  */
 public class Producto {
 
@@ -32,8 +33,8 @@ public class Producto {
 
     /**
      * Constructor al que le paso todos los atributos de la clase Producto
-     * excepto la id, ya que para el alta se la asignará automáticamente la bdd
-     * gracias a una secuencia.
+     * excepto la id, ya que se la asignará automáticamente la bdd gracias a una
+     * secuencia.
      *
      * @param nombre nombre del producto
      * @param idProveedor id del proveedor que comercializa el producto
@@ -77,7 +78,7 @@ public class Producto {
     /**
      * Método que devuelve la descripción del producto.
      *
-     * @return the descripcion
+     * @return la descripcion
      */
     public String getDescripcion() {
         return descripcion;
@@ -86,7 +87,7 @@ public class Producto {
     /**
      * Método que deuvelve el tipo del producto.
      *
-     * @return the tipo
+     * @return el tipo
      */
     public String getTipo() {
         return tipo;
@@ -100,11 +101,11 @@ public class Producto {
      */
     public String[] getArrayProducto() {
         String[] datosProducto = new String[5];
-        datosProducto[0] = Integer.toString(idProducto);
-        datosProducto[1] = nombre;
-        datosProducto[2] = Integer.toString(idProveedor);
-        datosProducto[3] = descripcion;
-        datosProducto[4] = tipo;
+        datosProducto[0] = Integer.toString(idProveedor);
+        datosProducto[1] = Integer.toString(idProducto);
+        datosProducto[2] = nombre;
+        datosProducto[3] = tipo;
+        datosProducto[4] = descripcion;
 
         return datosProducto;
 

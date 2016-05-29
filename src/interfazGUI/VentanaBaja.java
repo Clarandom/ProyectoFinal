@@ -1,7 +1,7 @@
 package interfazGUI;
 
-import conexionBaseDeDatos.DataBase;
-import gestionProducto.Producto;
+import accesodatos.DataBase;
+import gestionproductos.Producto;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -57,14 +57,19 @@ public class VentanaBaja extends JFrame implements ActionListener {
         buscar = new JTextField();
         etiquetaIdProducto = new JLabel("Producto: ");
         idProducto = new JTextField();
+        idProducto.setEnabled(false);
         etiquetaNombre = new JLabel("Nombre: ");
         nombre = new JTextField();
+        nombre.setEnabled(false);
         etiquetaProveedor = new JLabel("Proveedor: ");
         proveedor = new JTextField();
+        proveedor.setEnabled(false);
         etiquetaTipo = new JLabel("Tipo: ");
         tipo = new JTextField();
+        tipo.setEnabled(false);
         etiquetaDescripcion = new JLabel("Descripcion: ");
         descripcion = new JTextField();
+        descripcion.setEnabled(false);
         botonBuscar = new JButton("Buscar");
         botonBuscar.addActionListener(this);
         botonBuscar.setActionCommand("buscar");
@@ -120,17 +125,33 @@ public class VentanaBaja extends JFrame implements ActionListener {
      * contrario nos mostrará un error.
      */
     private void busca() {
-        producto = db.buscaProducto(Integer.parseInt(buscar.getText()));
-        if (producto == null) {
-            ventanaError("Registro no encontrado");
-        } else {
-            idProducto.setText(producto.getIdProducto() + "");
-            nombre.setText(producto.getNombre());
-            proveedor.setText(Integer.toString(producto.getIdProveedor()));
-            descripcion.setText(producto.getDescripcion());
-            tipo.setText(producto.getTipo());
+        try {
+            producto = db.buscaProducto(Integer.parseInt(buscar.getText()));
+            if (producto == null) {
+                ventanaError("Registro no encontrado");
+            } else {
+                idProducto.setText(producto.getIdProducto() + "");
+                nombre.setText(producto.getNombre());
+                proveedor.setText(Integer.toString(producto.getIdProveedor()));
+                descripcion.setText(producto.getDescripcion());
+                tipo.setText(producto.getTipo());
 
+            }
+        } catch (NumberFormatException e) {
+            ventanaError("Formato de Id no válido.");
         }
+    }
+
+    /**
+     * Método para borrar todos los campos del producto encontrado.
+     *
+     */
+    public void borra() {
+        idProducto.setText("");
+        nombre.setText("");
+        tipo.setText("");
+        proveedor.setText("");
+        descripcion.setText("");
     }
 
     /**
@@ -138,10 +159,15 @@ public class VentanaBaja extends JFrame implements ActionListener {
      * ventana emergente indicando si ha sido posible o no.
      */
     private void baja() {
-        if (db.bajaProducto(producto.getIdProducto())) {
-            ventanaAviso("Producto eliminado correctamente");
+        borra();
+        if (producto != null) {
+            if (db.bajaProducto(producto.getIdProducto())) {
+                ventanaAviso("Producto eliminado correctamente");
+            } else {
+                ventanaError("No ha sido posible eliminar el producto.");
+            }
         } else {
-            ventanaError("No ha sido posible eliminar el producto.");
+            ventanaError("El producto no existe");
         }
     }
 

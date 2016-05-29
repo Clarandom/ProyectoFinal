@@ -1,6 +1,6 @@
-package conexionBaseDeDatos;
+package accesodatos;
 
-import gestionProducto.Producto;
+import gestionproductos.Producto;
 import java.util.ArrayList;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;

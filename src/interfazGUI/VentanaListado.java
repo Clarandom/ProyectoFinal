@@ -1,7 +1,8 @@
 package interfazGUI;
 
-import conexionBaseDeDatos.DataBase;
-import gestionProducto.Producto;
+import accesodatos.DataBase;
+import gestionproductos.Producto;
+import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,7 +48,7 @@ public class VentanaListado extends JFrame implements ActionListener {
         this.setVisible(true);
         initComponents();
         this.pack();
-        this.setSize(800, 200);
+        this.setSize(800, 250);
     }
 
     /**
@@ -59,7 +60,8 @@ public class VentanaListado extends JFrame implements ActionListener {
         //inicializo "contenedor" (será el que me permita dividir la ventana 
         //final en 2: contenedorIzquierda y tabla)
         contenedor = (JPanel) this.getContentPane();
-        contenedor.setLayout(new GridLayout(1, 2, 2, 2));
+
+     contenedor.setLayout(new BorderLayout());
         //inicializo "contenedorIzquierda" que contiene todas las opciones de mi listado.
         contenedorIzquierda = new JPanel();
         contenedorIzquierda.setLayout(new GridLayout(3, 1));
@@ -69,8 +71,9 @@ public class VentanaListado extends JFrame implements ActionListener {
         contenedorTabla = new JPanel();
         creoTabla();
         JScrollPane scrollPane = new JScrollPane(table);
-        contenedor.add(contenedorIzquierda);
-        contenedor.add(scrollPane);
+        contenedor.add(contenedorIzquierda, BorderLayout.LINE_START);
+        contenedor.add(scrollPane, BorderLayout.CENTER);
+
     }
 
     /**
@@ -130,9 +133,9 @@ public class VentanaListado extends JFrame implements ActionListener {
         table = new JTable(modelo);
         modelo.addColumn("IdProveedor");
         modelo.addColumn("IdProducto");
-        modelo.addColumn("Nombre Prducto");
-        modelo.addColumn("Descripción");
+        modelo.addColumn("Nombre");
         modelo.addColumn("Tipo");
+        modelo.addColumn("Descripción");
     }
 
     /**
@@ -176,7 +179,7 @@ public class VentanaListado extends JFrame implements ActionListener {
      *
      */
     private void buscaProveedor() {
-       
+
         productos = db.listadoProductos(buscarPro.getText());
         if (productos.isEmpty()) {
             ventanaError("Registro no encontrado");

@@ -1,7 +1,7 @@
 package interfazGUI;
 
-import conexionBaseDeDatos.DataBase;
-import gestionProducto.Producto;
+import accesodatos.DataBase;
+import gestionproductos.Producto;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -65,7 +65,7 @@ public class VentanaAlta extends JFrame implements ActionListener {
         botonAlta = new JButton("Alta");
         botonAlta.addActionListener(this);
         botonAlta.setActionCommand("alta");
-        botonBorrar = new JButton("Borrar");
+        botonBorrar = new JButton("Borrar datos");
         botonBorrar.addActionListener(this);
         botonBorrar.setActionCommand("borrar");
         //los añado al contendor
@@ -87,26 +87,24 @@ public class VentanaAlta extends JFrame implements ActionListener {
      * esté comprobando.
      */
     private void alta() {
-        if (!compruebaCadena100(nombre.getText())) {
+        int idProveedor = proveedorCorrecto(proveedor.getText());
+        if (idProveedor <= 0 || !db.buscaProveedor(idProveedor)) {
+            ventanaError("Debe introducir una id de proveedor válida.");
+        } else if (!compruebaCadena100(nombre.getText())) {
             ventanaError("Nombre incorrecto.");
-        } else if (!compruebaCadena5(tipo.getText())) {
+        } else if (!compruebaCadena4(tipo.getText())) {
             ventanaError("Tipo incorrecto.");
-        } else if (!compruebaCadena100(descripcion.getText())) {
-            ventanaError("Descripción incorrecta.");
         } else {
-            int idProveedor = proveedorCorrecto(proveedor.getText());
-            if (idProveedor > 0) {
-                if (db.buscaProveedor(idProveedor)) {
-                    Producto producto = new Producto(nombre.getText(), idProveedor,
-                            descripcion.getText(), tipo.getText());
-                    if (db.altaProducto(producto)) {
-                        ventanaAviso("Alta correcta.");
-                    }
+            if (compruebaCadena100(descripcion.getText())) {
+                Producto producto = new Producto(nombre.getText(), idProveedor,
+                        descripcion.getText(), tipo.getText());
+                if (db.altaProducto(producto)) {
+                    ventanaAviso("Alta correcta.");
                 } else {
-                    ventanaError("El proveedor no existe.");
+                    ventanaAviso("El producto ya existe.");
                 }
             } else {
-                ventanaError("Debe introducir una id de proveedor válida.");
+                ventanaError("Descripción incorrecta.");
             }
         }
     }
@@ -142,13 +140,13 @@ public class VentanaAlta extends JFrame implements ActionListener {
     }
 
     /**
-     * Comprueba que un String está comprendido entre 0 y 5 carácteres.
+     * Comprueba que un String está comprendido entre 0 y 4 carácteres.
      *
      * @param cadena a comprobar
      * @return true si la cadena cumple las condiciones.
      */
-    private boolean compruebaCadena5(String cadena) {
-        return cadena.length() > 0 && cadena.length() <= 100;
+    private boolean compruebaCadena4(String cadena) {
+        return cadena.length() > 0 && cadena.length() <= 4;
     }
 
     /**
@@ -195,7 +193,7 @@ public class VentanaAlta extends JFrame implements ActionListener {
             case "alta":
                 alta();
                 break;
-            case "borra":
+            case "borrar":
                 borra();
                 break;
             default:

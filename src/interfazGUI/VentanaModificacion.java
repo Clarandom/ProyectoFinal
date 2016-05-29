@@ -1,7 +1,7 @@
 package interfazGUI;
 
-import conexionBaseDeDatos.DataBase;
-import gestionProducto.Producto;
+import accesodatos.DataBase;
+import gestionproductos.Producto;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,7 +21,7 @@ import javax.swing.JTextField;
  * @author Clara Subirón
  * @version 24/05/2016
  */
-public class VentanaModificacion extends JFrame implements ActionListener{
+public class VentanaModificacion extends JFrame implements ActionListener {
 
     JPanel contenedor;
     JButton botonBuscar, botonBorrar, botonModificar;
@@ -92,7 +92,7 @@ public class VentanaModificacion extends JFrame implements ActionListener{
         contenedor.add(descripcion);
         contenedor.add(botonBorrar);
         contenedor.add(botonModificar);
-  
+
     }
 
     /**
@@ -126,25 +126,21 @@ public class VentanaModificacion extends JFrame implements ActionListener{
      * la id de proveedor exista).
      */
     private void modifica() {
-        if (!compruebaCadena100(nombre.getText())) {
+        int idProveedor = proveedorCorrecto(proveedor.getText());
+        if (idProveedor <= 0 || !db.buscaProveedor(idProveedor)) {
+            ventanaError("Debe introducir una id de proveedor válida.");
+        } else if (!compruebaCadena100(nombre.getText())) {
             ventanaError("Nombre incorrecto.");
-        } else if (!compruebaCadena5(tipo.getText())) {
+        } else if (!compruebaCadena4(tipo.getText())) {
             ventanaError("Tipo incorrecto.");
-        } else if (!compruebaCadena100(descripcion.getText())) {
-            ventanaError("Descripción incorrecta.");
         } else {
-            int idProveedor = proveedorCorrecto(proveedor.getText());
-            if (idProveedor > 0) {
-                if (db.buscaProveedor(idProveedor)) {
-                    db.modificaProducto(Integer.parseInt(idProducto.getText()),
-                            nombre.getText(), idProveedor, descripcion.getText(),
-                            tipo.getText());
-                    ventanaAviso("Modificación correcta.");
-                } else {
-                    ventanaError("El proveedor no existe.");
-                }
+            if (compruebaCadena100(descripcion.getText())) {
+                db.modificaProducto(Integer.parseInt(idProducto.getText()),
+                        nombre.getText(), idProveedor, descripcion.getText(),
+                        tipo.getText());
+                ventanaAviso("Modificación correcta.");
             } else {
-                ventanaError("Debe introducir una id de proveedor válida.");
+                ventanaError("Descripción incorrecta.");
             }
         }
     }
@@ -180,13 +176,13 @@ public class VentanaModificacion extends JFrame implements ActionListener{
     }
 
     /**
-     * Comprueba que un String está comprendido entre 0 y 5 carácteres.
+     * Comprueba que un String está comprendido entre 0 y 4 carácteres.
      *
      * @param cadena a comprobar
      * @return true si la cadena cumple las condiciones.
      */
-    private boolean compruebaCadena5(String cadena) {
-        return cadena.length() > 0 && cadena.length() <= 100;
+    private boolean compruebaCadena4(String cadena) {
+        return cadena.length() > 0 && cadena.length() <= 4;
     }
 
     /**
